@@ -8,4 +8,4 @@ It should hold the server ip address or url.
 A Windows PC.
 
 Database Schema:
-[Picutre of DB](./ERD_DB.png)
+![Picture of DB](./ERD_DB.png)
