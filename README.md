@@ -1,5 +1,6 @@
 # Notification Squad
 
+![Picture of GUI](./GUI_showcase.png)
 
 ## Requirements:
 A file in the core directory called host.txt
