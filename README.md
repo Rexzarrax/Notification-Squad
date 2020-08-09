@@ -7,5 +7,8 @@ It should hold the server ip address or url.
 
 A Windows PC.
 
+At this time, only 4 Status are available to be Set.
+
 Database Schema:
+
 ![Picture of DB](./ERD_DB.png)
