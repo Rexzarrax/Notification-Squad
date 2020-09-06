@@ -14,7 +14,7 @@ namespace Notification_Squad
 
 			ReadHost RH = new ReadHost();
 			Console.WriteLine(RH.Get());
-			string cs = @"server=" + RH.Get() + ";userid=NS_USER;password=;database=notification_squad";
+			string cs = @"server=" + RH.Get() + ";userid=NS_USER;password=Coast-Hard-Complicate-Rate-9;database=notification_squad";
 
             try
             {
@@ -56,10 +56,15 @@ namespace Notification_Squad
 		public void LoadAll()
 		{
 			//Set the names of the buttons
-			button_select_1.Text = SQL.statusList[0];
-			button_select_2.Text = SQL.statusList[1];
-			button_select_3.Text = SQL.statusList[2];
-			button_select_4.Text = SQL.statusList[3];
+
+			foreach(string status in SQL.statusList)
+            {
+				if(status != "Clear")
+                {
+					comboBox_status.Items.Add(status);
+				}
+
+            }
 
 			for (int i = 0; i < SQL.userList.Count(); i++)
 			{
@@ -92,27 +97,6 @@ namespace Notification_Squad
 			}
 		}
 
-        private void Button_select_1_Click(object sender, EventArgs e)
-        {
-			All_button_actions(1);
-
-		}
-
-        private void Button_select_2_Click(object sender, EventArgs e)
-        {
-			All_button_actions(2);
-		}
-
-        private void Button_select_3_Click(object sender, EventArgs e)
-        {
-			All_button_actions(3);
-		}
-
-        private void Button_select_4_Click(object sender, EventArgs e)
-        {
-			All_button_actions(4);
-		}
-
 		private List<string> GetTicks()
         {
 			List<string> checkedNames = new List<string>();
@@ -136,6 +120,12 @@ namespace Notification_Squad
         private void timer_autoreload_Tick(object sender, EventArgs e)
         {
 			ReloadAll();
+		}
+
+        private void comboBox_status_SelectedIndexChanged(object sender, EventArgs e)
+        {
+			All_button_actions(comboBox_status.SelectedIndex+1);
+
 		}
     }
 
