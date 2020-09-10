@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Notification_Squad
+namespace Notification_Squad_DNC
 {
-	public partial class UserControl_emp_status : UserControl
-	{
-		public UserControl_emp_status()
-		{
-			InitializeComponent();
-		}
-
+    public partial class UserControl_emp_status : UserControl
+    {
+        public UserControl_emp_status()
+        {
+            InitializeComponent();
+        }
     }
 }

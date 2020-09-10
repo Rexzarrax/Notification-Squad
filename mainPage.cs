@@ -1,45 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-namespace Notification_Squad
+
+namespace Notification_Squad_DNC
 {
-	public partial class mainPage : Form
-	{
-		sql_access SQL;
+    public partial class mainPage : Form
+    {
+		readonly Sql_access SQL;
 		int reloadnum = 0;
 		public mainPage()
-		{
-			InitializeComponent();
-
-			ReadHost RH = new ReadHost();
-			Console.WriteLine(RH.Get());
-			string cs = @"server=" + RH.Get() + ";userid=NS_USER;password=Coast-Hard-Complicate-Rate-9;database=notification_squad";
+        {
+            InitializeComponent();
+            ReadHost RH = new ReadHost();
+            Console.WriteLine(RH.Get());
+            string cs = @"server=" + RH.Get() + ";userid=NS_USER;password=Coast-Hard-Complicate-Rate-9;database=notification_squad";
 
             try
             {
-				SQL = new sql_access(cs);
-				SQL.GetStatusAll();
-				SQL.GetUserStatusAll();
-				LoadAll();
-				toolStripStatusLabel_db_type.Text = "DB location: " + RH.Get();
-			}
-			catch
+                SQL = new Sql_access(cs);
+                SQL.GetStatusAll();
+                SQL.GetUserStatusAll();
+                LoadAll();
+                toolStripStatusLabel_db_type.Text = "DB location: " + RH.Get();
+            }
+            catch
             {
-				timer_autoreload.Stop();
-				MessageBox.Show("Error connecting to Database", "Critical Error");
-				Application.Exit();
-				System.Environment.Exit(1);
-			}
-			
-		}
+                timer_autoreload.Stop();
+                MessageBox.Show("Error connecting to Database", "Critical Error");
+                Application.Exit();
+                System.Environment.Exit(1);
+            }
+        }
 
 		private void ReloadAll()
-        {
-			Console.WriteLine("Reloading - "+ reloadnum++);
+		{
+			Console.WriteLine("Reloading - " + reloadnum++);
 			SQL.GetUserStatusAll();
 			int availableCount = 0;
-			for (int i = 0; i <= SQL.userList.Count()-1; i++)
+			for (int i = 0; i <= SQL.userList.Count() - 1; i++)
 			{
 				flowLayoutPanel_status.Controls[i].Controls["textBox_name"].Text = SQL.userList[i].name;
 				flowLayoutPanel_status.Controls[i].Controls["textBox_status"].Text = SQL.userList[i].status;
@@ -57,14 +61,14 @@ namespace Notification_Squad
 		{
 			//Set the names of the buttons
 
-			foreach(string status in SQL.statusList)
-            {
-				if(status != "Clear")
-                {
+			foreach (string status in SQL.statusList)
+			{
+				if (status != "Clear")
+				{
 					comboBox_status.Items.Add(status);
 				}
 
-            }
+			}
 
 			for (int i = 0; i < SQL.userList.Count(); i++)
 			{
@@ -74,59 +78,57 @@ namespace Notification_Squad
 		}
 
 		public void GetPercentage(int total, int countofavail)
-        {
-			double percentage = ((double)countofavail / total)*100;
-			
-			toolStripStatusLabel_available_percentage.Text = "Available: "+percentage.ToString()+"%";
+		{
+			double percentage = ((double)countofavail / total) * 100;
+
+			toolStripStatusLabel_available_percentage.Text = "Availability: " + percentage.ToString() + "%";
 		}
 
-		private void All_button_actions(int status_id)
-        {
+		private void All_button_actions(string status_name)
+		{
 			SQL.GetUserStatusAll();
 			if (GetTicks().Count >= 1)
 			{
 				foreach (string name in GetTicks())
-                {
-					SQL.SetStatus(name, status_id);
+				{
+					SQL.SetStatus(name, status_name);
 				}
 				ReloadAll();
 			}
 			else
 			{
-				MessageBox.Show("Please select a User","Error");
+				MessageBox.Show("Please select a User", "Error");
 			}
 		}
 
 		private List<string> GetTicks()
-        {
+		{
 			List<string> checkedNames = new List<string>();
 			foreach (Control control in flowLayoutPanel_status.Controls)
-            {
+			{
 				if (control.Controls.ContainsKey("checkBox_Selected_to_change"))
-                {
+				{
 					CheckBox checkBox = (CheckBox)control.Controls["checkBox_Selected_to_change"];
-                    if (checkBox.Checked)
-                    {
+					if (checkBox.Checked)
+					{
 						checkedNames.Add(control.Controls["textBox_name"].Text);
 						Console.WriteLine(checkedNames);
 					}
 
 				}
-            }
+			}
 			return checkedNames;
 
 		}
 
-        private void timer_autoreload_Tick(object sender, EventArgs e)
+		private void Timer_Autoreload_Tick(object sender, EventArgs e)
         {
-			ReloadAll();
-		}
+            ReloadAll();
+        }
 
         private void comboBox_status_SelectedIndexChanged(object sender, EventArgs e)
         {
-			All_button_actions(comboBox_status.SelectedIndex+1);
-
+			All_button_actions(comboBox_status.Text);
 		}
     }
-
 }

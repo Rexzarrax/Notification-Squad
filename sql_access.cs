@@ -3,48 +3,48 @@ using System.Collections.Generic;
 using System.Data;
 using MySql.Data.MySqlClient;
 
-namespace Notification_Squad
+namespace Notification_Squad_DNC
 {
-	class sql_access
+    class Sql_access
 	{
-		MySqlConnection SQLConn;
+        readonly MySqlConnection SQLConn;
 
 		public readonly List<string> statusList;
 		public readonly List<User> userList;
 
-		public sql_access(string cs)
+		public Sql_access(string cs)
 		{
 			statusList = new List<string>();
 			userList = new List<User>();
 
 			SQLConn = new MySqlConnection(cs);
-            try
-            {
+			try
+			{
 				SQLConn.Open();
 				Console.WriteLine(SQLConn.ServerVersion.ToString());
 			}
-            catch
-            {
+			catch
+			{
 				throw new Exception("Database Connection Error");
 			}
 
 		}
 		public void ReopenConnections()
-        {
-            try
-            {
+		{
+			try
+			{
 				SQLConn.Close();
 				SQLConn.Open();
 			}
-            catch
-            {
+			catch
+			{
 				throw new Exception("Database Connection Error");
 			}
 		}
 		//update the status of the user on the database.
-		public void SetStatus(string name, int status_id)
+		public void SetStatus(string name, string status_name)
 		{
-			string sqlstatement = String.Format("update notification_squad.user_names set notification_squad.user_names.status_id = {1} where name = '{0}';", name, status_id) ;
+			string sqlstatement = String.Format("update notification_squad.user_names set notification_squad.user_names.status_id = (Select status_id from status where status_name = '{1}') where name = '{0}';", name, status_name);
 			Console.WriteLine(sqlstatement);
 			ReopenConnections();
 			MySqlCommand cmd = new MySqlCommand(sqlstatement, SQLConn);
@@ -75,7 +75,7 @@ namespace Notification_Squad
 		}
 
 		public void GetUserStatusAll()
-        {
+		{
 			ReopenConnections();
 			userList.Clear();
 			string sqlstatement = "SELECT user_names.name,status.status_name FROM notification_squad.user_names INNER JOIN notification_squad.status ON user_names.status_id = status.status_id ORDER BY user_names.name ASC;";
@@ -94,14 +94,14 @@ namespace Notification_Squad
 
 	}
 	struct User
-    {
+	{
 		public string name;
 		public string status;
-		
-		public User (string Name, string Status)
-        {
+
+		public User(string Name, string Status)
+		{
 			name = Name;
 			status = Status;
-        }
+		}
 	}
 }
